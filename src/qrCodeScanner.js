@@ -1,4 +1,5 @@
-const btnGetLocation = document.getElementById("btn-get-location");
+const btnSendLocation = document.getElementById("btn-send-info");
+btnSendLocation.hidden = true;
 const dataLocation = document.getElementById("objToSend");
 const qrreader = document.getElementById("qr-reader");
 
@@ -10,15 +11,20 @@ const html5QrCode = new Html5Qrcode("qr-reader", {
 const qrCodeSuccessCallback = (decodedText, decodedResult) => {
   console.log(`Scan result: ${decodedText}`, decodedResult);
   recordObj.DEUI = decodedText;
+  html5QrCode
+    .stop()
+    .then((ignore) => {
+      qrreader.hidden = true; // QR Code scanning is stopped.
+      getLocation();
+    })
+    .catch((err) => {
+      // Stop failed, handle it.
+    });
 };
 const config = { fps: 20, qrbox: 250 };
 
-// If you want to prefer front camera
 html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
 
-btnGetLocation.onclick = () => {
-  getLocation();
-};
 function getLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition);
@@ -30,6 +36,9 @@ function getLocation() {
 function showPosition(position) {
   console.log(position.coords);
   recordObj.Location = position.coords;
+  PopulateData();
+}
+function PopulateData() {
   dataLocation.innerHTML =
     "DEUI:" +
     recordObj.DEUI +
@@ -37,4 +46,16 @@ function showPosition(position) {
     recordObj.Location.latitude +
     " Longitude: " +
     recordObj.Location.longitude;
+  btnSendLocation.hidden = false;
 }
+
+btnSendLocation.onclick = function () {
+  qrreader.hidden = false;
+  html5QrCode.start(
+    { facingMode: "environment" },
+    config,
+    qrCodeSuccessCallback
+  );
+  recordObj = {};
+  dataLocation.innerHTML = "";
+};
