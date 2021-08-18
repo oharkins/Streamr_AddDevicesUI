@@ -21,10 +21,10 @@ h1 {
   margin: 0;
 }
 
-#qr-canvas {
+#qr-reader {
   margin: auto;
   width: calc(100% - 20px);
-  max-width: 400px;
+  max-width: 600px;
 }
 
 #btn-scan-qr {
@@ -38,7 +38,7 @@ h1 {
   background: white;
 }
 
-#qr-result {
+#objToSend {
   font-size: 1.2em;
   margin: 20px auto;
   padding: 20px;

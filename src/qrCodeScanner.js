@@ -1,58 +1,40 @@
-const qrcode = window.qrcode;
+const btnGetLocation = document.getElementById("btn-get-location");
+const dataLocation = document.getElementById("objToSend");
+const qrreader = document.getElementById("qr-reader");
 
-const video = document.createElement("video");
-const canvasElement = document.getElementById("qr-canvas");
-const canvas = canvasElement.getContext("2d");
+var recordObj = {};
 
-const qrResult = document.getElementById("qr-result");
-const outputData = document.getElementById("outputData");
-const btnScanQR = document.getElementById("btn-scan-qr");
+const html5QrCode = new Html5Qrcode("qr-reader", {
+  formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE]
+});
+const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+  console.log(`Scan result: ${decodedText}`, decodedResult);
+  recordObj.DEUI = decodedText;
+};
+const config = { fps: 20, qrbox: 250 };
 
-let scanning = false;
+// If you want to prefer front camera
+html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
 
-qrcode.callback = res => {
-  if (res) {
-    outputData.innerText = res;
-    scanning = false;
-
-    video.srcObject.getTracks().forEach(track => {
-      track.stop();
-    });
-
-    qrResult.hidden = false;
-    canvasElement.hidden = true;
-    btnScanQR.hidden = false;
+btnGetLocation.onclick = () => {
+  getLocation();
+};
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+    alert("Geolocation is not supported by this browser.");
   }
-};
-
-btnScanQR.onclick = () => {
-  navigator.mediaDevices
-    .getUserMedia({ video: { facingMode: "environment" } })
-    .then(function(stream) {
-      scanning = true;
-      qrResult.hidden = true;
-      btnScanQR.hidden = true;
-      canvasElement.hidden = false;
-      video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
-      video.srcObject = stream;
-      video.play();
-      tick();
-      scan();
-    });
-};
-
-function tick() {
-  canvasElement.height = video.videoHeight;
-  canvasElement.width = video.videoWidth;
-  canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-
-  scanning && requestAnimationFrame(tick);
 }
 
-function scan() {
-  try {
-    qrcode.decode();
-  } catch (e) {
-    setTimeout(scan, 300);
-  }
+function showPosition(position) {
+  console.log(position.coords);
+  recordObj.Location = position.coords;
+  dataLocation.innerHTML =
+    "DEUI:" +
+    recordObj.DEUI +
+    "<br/>GPS Latitude: " +
+    recordObj.Location.latitude +
+    " Longitude: " +
+    recordObj.Location.longitude;
 }
