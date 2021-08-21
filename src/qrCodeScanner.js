@@ -40,6 +40,7 @@ $(document).ready(function () {
 
   function showPosition(position) {
     console.log(position.coords);
+    recordObj.datetime = Date.now();
     recordObj.location = {};
     recordObj.location.latitude = position.coords.latitude;
     recordObj.location.longitude = position.coords.longitude;
