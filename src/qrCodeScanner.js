@@ -60,8 +60,7 @@ $(document).ready(function () {
 
   btnSendLocation.onclick = function () {
     var settings = {
-      url:
-        "https://303dkap6b0.execute-api.us-west-2.amazonaws.com/Prod/storage",
+      url: "https://kxryiauey7.execute-api.us-west-2.amazonaws.com/v1/storage",
       method: "POST",
       timeout: 0,
       headers: {
