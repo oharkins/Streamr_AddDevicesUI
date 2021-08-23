@@ -60,7 +60,8 @@ $(document).ready(function () {
 
   btnSendLocation.onclick = function () {
     var settings = {
-      url: "https://enjqxejxr40b4zz.m.pipedream.net",
+      url:
+        "https://303dkap6b0.execute-api.us-west-2.amazonaws.com/Prod/storage",
       method: "POST",
       timeout: 0,
       headers: {
