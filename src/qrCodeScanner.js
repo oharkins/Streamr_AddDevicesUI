@@ -60,7 +60,7 @@ $(document).ready(function () {
 
   btnSendLocation.onclick = function () {
     var settings = {
-      url: "https://kxryiauey7.execute-api.us-west-2.amazonaws.com/v1/storage",
+      url: "https://streamr.larkalert.com/storage",
       method: "POST",
       timeout: 0,
       headers: {
